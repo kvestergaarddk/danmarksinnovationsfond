@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DI Logo Animation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f5f4f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: system-ui, sans-serif;
+      gap: 48px;
+    }
+
+    .logo-wrap { width: 180px; height: 186px; }
+    svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* ── 1. Cirkel tegnes rundt fra toppen — hurtigere end original ── */
+    #draw-circle {
+      fill: none;
+      stroke: #08006F;
+      stroke-linecap: butt;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation:
+        draw-circle 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.2s forwards,
+        hide-circle 0s  linear 1.25s forwards;
+    }
+
+    @keyframes draw-circle { to { stroke-dashoffset: 0; } }
+    @keyframes hide-circle  { to { opacity: 0; } }
+
+    /* ── 2+3. Ring og bro starter samtidig — præcis som originalen ── */
+    #ring-fill {
+      opacity: 0;
+      animation: fade-in 0.15s ease 1.1s forwards;
+    }
+
+    @keyframes fade-in { to { opacity: 1; } }
+
+    #bridge-group {
+      transform-origin: 194.858px 75.1px;
+      transform: scaleY(0);
+      opacity: 0;
+      animation: grow-up 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 1.1s forwards;
+    }
+
+    @keyframes grow-up {
+      0%   { transform: scaleY(0); opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* ── Controls ── */
+    .controls { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    button {
+      padding: 10px 28px;
+      background: #08006F;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+    .bg-switcher { display: flex; align-items: center; gap: 8px; }
+    .bg-switcher span { font-size: 13px; color: #666; }
+    .swatch {
+      width: 26px; height: 26px; border-radius: 50%;
+      cursor: pointer; outline: 2px solid #ccc; outline-offset: 2px;
+      transition: transform 0.15s;
+    }
+    .swatch:hover  { transform: scale(1.15); }
+    .swatch.active { outline-color: #08006F; }
+  </style>
+</head>
+<body>
+
+<div class="logo-wrap" id="logoWrap">
+  <svg viewBox="0 0 390 403" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <circle id="draw-circle"
+      cx="194.9" cy="207.3" r="166.2"
+      stroke-width="57.4"
+      pathLength="1"
+      transform="rotate(-90 194.9 207.3)"
+    />
+
+    <path id="ring-fill" fill="#08006F"
+      d="M297.952 45.6357L269.184 94.9514C307.107 119.241 332.297 161.38 332.297 209.316C332.297 257.252 304.644 303.531 263.56 327.085C243.344 338.678 219.874 345.348 194.824 345.348C169.774 345.348 146.35 338.678 126.087 327.131C85.0029 303.531 57.3503 259.552 57.3503 209.316C57.3503 159.08 82.5398 119.195 120.463 94.9514L91.6954 45.6357C36.7153 79.7243 0 140.311 0 209.27C0 278.229 39.225 342.864 97.4583 376.309C126.133 392.778 159.41 402.208 194.917 402.208C230.424 402.208 263.653 392.778 292.375 376.309C350.562 342.864 389.833 280.529 389.833 209.27C389.833 138.011 353.118 79.7243 298.045 45.6357H297.952Z"/>
+
+    <g id="bridge-group">
+      <path id="path-bridge" fill="#08006F"
+        d="M194.858 56.9063C219.862 56.9063 243.332 63.5768 263.595 75.1236L292.316 25.8999C263.641 9.43071 230.365 0 194.858 0C159.351 0 126.121 9.43071 97.4462 25.8999L126.168 75.1236C146.384 63.5308 169.854 56.9063 194.858 56.9063Z"/>
+    </g>
+
+  </svg>
+</div>
+
+<div class="controls">
+  <button onclick="replay()">Afspil igen</button>
+  <div class="bg-switcher">
+    <span>Baggrund:</span>
+    <div class="swatch active" style="background:#f5f4f0" onclick="setBg('#f5f4f0','light',this)"></div>
+    <div class="swatch"        style="background:#ffffff" onclick="setBg('#ffffff','light',this)"></div>
+    <div class="swatch"        style="background:#08006F" onclick="setBg('#08006F','dark',this)"></div>
+    <div class="swatch"        style="background:#1a1a1a" onclick="setBg('#1a1a1a','dark',this)"></div>
+  </div>
+</div>
+
+<script>
+  const SVG_TEMPLATE = document.getElementById('logoWrap').innerHTML;
+  let logoColor = '#08006F';
+
+  function applyColor() {
+    const circle = document.getElementById('draw-circle');
+    const fill   = document.getElementById('ring-fill');
+    const bridge = document.getElementById('path-bridge');
+    if (circle) circle.style.stroke = logoColor;
+    if (fill)   fill.style.fill     = logoColor;
+    if (bridge) bridge.style.fill   = logoColor;
+  }
+
+  window.addEventListener('load', applyColor);
+
+  function replay() {
+    document.getElementById('logoWrap').innerHTML = SVG_TEMPLATE;
+    requestAnimationFrame(() => requestAnimationFrame(applyColor));
+  }
+
+  function setBg(color, scheme, el) {
+    document.body.style.background = color;
+    logoColor = scheme === 'dark' ? '#ffffff' : '#08006F';
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    const btn = document.querySelector('button');
+    btn.style.background = logoColor;
+    btn.style.color      = scheme === 'dark' ? '#08006F' : '#fff';
+    document.querySelector('.swatch.active').style.outlineColor = logoColor;
+    replay();
+  }
+</script>
+
+</body>
+</html>

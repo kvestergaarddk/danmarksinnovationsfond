@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DI — Gradient Baggrund</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: system-ui, sans-serif;
+    }
+
+    /* ── Container ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+    }
+
+    /* ── Blobs ── */
+    .blobs {
+      position: absolute;
+      inset: 0;
+      filter: blur(60px);
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      mix-blend-mode: multiply;
+      animation: fade-in 1.2s ease forwards;
+    }
+
+    @keyframes fade-in {
+      to { opacity: 1; }
+    }
+
+    .blob-1 {
+      width: 75vw;
+      height: 75vw;
+      background: radial-gradient(circle at center,
+        rgba(10, 99, 250, 0.32) 0%,
+        rgba(10, 99, 250, 0.12) 40%,
+        rgba(10, 99, 250, 0) 70%
+      );
+      top: calc(50% - 37.5vw);
+      left: calc(50% - 37.5vw);
+      animation: fade-in 1.2s ease forwards, orbit-1 14s ease-in-out infinite;
+    }
+
+    @keyframes orbit-1 {
+      0%   { transform: translate(-18%, -12%) scale(1); }
+      25%  { transform: translate(14%, -18%) scale(1.08); }
+      50%  { transform: translate(20%, 14%) scale(1.04); }
+      75%  { transform: translate(-10%, 20%) scale(0.95); }
+      100% { transform: translate(-18%, -12%) scale(1); }
+    }
+
+    .blob-2 {
+      width: 65vw;
+      height: 65vw;
+      background: radial-gradient(circle at center,
+        rgba(8, 0, 111, 0.24) 0%,
+        rgba(8, 0, 111, 0.10) 40%,
+        rgba(8, 0, 111, 0) 70%
+      );
+      top: calc(50% - 32.5vw);
+      left: calc(50% - 32.5vw);
+      animation: fade-in 1.8s ease forwards, orbit-2 18s ease-in-out infinite;
+    }
+
+    @keyframes orbit-2 {
+      0%   { transform: translate(22%, -14%) scale(1.05); }
+      25%  { transform: translate(-14%, -20%) scale(0.95); }
+      50%  { transform: translate(-20%, 16%) scale(1.08); }
+      75%  { transform: translate(16%, 20%) scale(1); }
+      100% { transform: translate(22%, -14%) scale(1.05); }
+    }
+
+    .blob-3 {
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle at center,
+        rgba(65, 130, 255, 0.22) 0%,
+        rgba(65, 130, 255, 0.08) 45%,
+        rgba(65, 130, 255, 0) 70%
+      );
+      top: calc(50% - 27.5vw);
+      left: calc(50% - 27.5vw);
+      animation: fade-in 2.4s ease forwards, orbit-3 22s ease-in-out infinite;
+    }
+
+    @keyframes orbit-3 {
+      0%   { transform: translate(-8%, 22%) scale(1); }
+      33%  { transform: translate(20%, 8%) scale(1.06); }
+      66%  { transform: translate(6%, -20%) scale(0.94); }
+      100% { transform: translate(-8%, 22%) scale(1); }
+    }
+
+    /* Blob 4 — mouse-følger */
+    .blob-mouse {
+      position: absolute;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle at center,
+        rgba(10, 99, 250, 0.22) 0%,
+        rgba(10, 99, 250, 0.08) 40%,
+        rgba(10, 99, 250, 0) 68%
+      );
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      filter: blur(40px);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .blob-mouse.visible {
+      opacity: 1;
+    }
+
+    /* ── Sektion ── */
+    .section {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 120px 80px;
+      pointer-events: none;
+    }
+
+    /* ── Kort-grid ── */
+    .cards {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      pointer-events: all;
+    }
+
+    /* ── Flip-wrapper (perspektiv) ── */
+    .card-wrap {
+      width: 300px;
+      height: 430px;
+      flex-shrink: 0;
+      perspective: 1200px;
+    }
+
+    /* ── Det roterende element ── */
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-wrap.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* ── Fælles face-styling ── */
+    .card-front,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-bottom: 1px solid #08006F;
+      border-right: 1px solid #08006F;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 0 10px;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Hover gradient — kun i bunden, fader ud inden teksten */
+    .card-front::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 80% 60% at 100% 100%,
+        rgba(10, 99, 250, 0.30) 0%,
+        rgba(10, 99, 250, 0.12) 45%,
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card-wrap:not(.flipped):hover .card-front::before { opacity: 1; }
+
+    /* ── Kortindhold ── */
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Bagside: indhold øverst */
+    .card-back .card-body {
+      justify-content: flex-start;
+    }
+
+    .card-title {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 28px;
+      color: #08006F;
+      margin: 0;
+    }
+
+    /* description-row: har border-bottom og pb-24 (fra 111:909) */
+    .card-desc {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      border-bottom: 1px solid #08006F;
+      padding-bottom: 24px;
+    }
+
+    .card-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+      color: #08006F;
+      margin: 0;
+    }
+
+    /* ── Mørk variant ── */
+    .card-wrap.dark .card-front,
+    .card-wrap.dark .card-back {
+      border-bottom-color: #ffffff;
+      border-right-color: #ffffff;
+      background: #08006F;
+      color: #ffffff;
+    }
+
+    .card-wrap.dark .card-title,
+    .card-wrap.dark .card-text,
+    .card-wrap.dark .card-link { color: #ffffff; }
+
+    .card-wrap.dark .card-desc { border-bottom-color: #ffffff; }
+
+    .card-wrap.dark .card-links { border-bottom-color: #ffffff; }
+
+    .card-wrap.dark .icon-btn { color: #ffffff; }
+
+    .card-wrap.dark .card-front::before {
+      background: radial-gradient(
+        ellipse 80% 60% at 100% 100%,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.05) 45%,
+        transparent 70%
+      );
+    }
+
+    /* ── Pile-links (bagside) ── */
+    .card-links {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: flex-end;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #08006F;
+      transition: transform 0.25s ease;
+    }
+
+
+    .card-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+      color: #08006F;
+      cursor: pointer;
+      text-decoration: none;
+      transition: gap 0.2s ease;
+    }
+
+    .card-link:hover { gap: 14px; }
+
+    .card-link svg { flex-shrink: 0; }
+
+    /* ── Footer ── */
+    .card-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+
+    /* ⊕ / ⊖ cirkel-knap */
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .icon-btn:hover { transform: scale(1.14); }
+    .icon-btn svg { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob-mouse" id="blobMouse"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="cards">
+
+    <!-- SVG-ikoner defineret én gang og genbrugt -->
+    <svg style="display:none">
+      <symbol id="ico-plus" viewBox="0 0 32 32" fill="none">
+        <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+        <path d="M11 16H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 11V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="ico-minus" viewBox="0 0 32 32" fill="none">
+        <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+        <path d="M11 16H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="ico-arrow" viewBox="0 0 12 12" fill="none">
+        <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="square" stroke-linejoin="miter"/>
+      </symbol>
+    </svg>
+
+    <!-- Kort 1 -->
+    <div class="card-wrap" onclick="flip(this)">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="card-body">
+            <p class="card-title">Søger støtte</p>
+            <div class="card-desc">
+              <p class="card-text">Find ud af om dit projekt kan få støtte og hvor du skal starte</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Åbn">
+              <svg width="32" height="32"><use href="#ico-plus"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="card-body">
+            <p class="card-title">Vælg hvem du er og<br>se hvad du kan søge</p>
+          </div>
+          <div class="card-links">
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Iværksætter</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Virksomhed</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Forsker</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Offentlig organisation</a>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Luk" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()">
+              <svg width="32" height="32"><use href="#ico-minus"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kort 2 -->
+    <div class="card-wrap" onclick="flip(this)">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="card-body">
+            <p class="card-title">Hjælp andre</p>
+            <div class="card-desc">
+              <p class="card-text">Få overblik og præcist materiale, så du kan rådgive om ansøgninger og programmer</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Åbn">
+              <svg width="32" height="32"><use href="#ico-plus"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="card-body">
+            <p class="card-title">Vælg din rolle og<br>find det rette materiale</p>
+          </div>
+          <div class="card-links">
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Rådgiver</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Revisor</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Inkubator</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Erhvervshus</a>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Luk" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()">
+              <svg width="32" height="32"><use href="#ico-minus"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kort 3 -->
+    <div class="card-wrap" onclick="flip(this)">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="card-body">
+            <p class="card-title">Har en bevilling</p>
+            <div class="card-desc">
+              <p class="card-text">Få overblik over dit projekt, krav og hvad du skal gøre næst</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Åbn">
+              <svg width="32" height="32"><use href="#ico-plus"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="card-body">
+            <p class="card-title">Hvad ønsker<br>du hjælp til?</p>
+          </div>
+          <div class="card-links">
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Afrapportering</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Projektændringer</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Økonomi</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Kommunikation</a>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Luk" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()">
+              <svg width="32" height="32"><use href="#ico-minus"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kort 4 -->
+    <div class="card-wrap" onclick="flip(this)">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="card-body">
+            <p class="card-title">Få viden</p>
+            <div class="card-desc">
+              <p class="card-text">Udforsk data, projekter og resultater fra fonden</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Åbn">
+              <svg width="32" height="32"><use href="#ico-plus"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="card-body">
+            <p class="card-title">Hvad ønsker du<br>at udforske?</p>
+          </div>
+          <div class="card-links">
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Data og statistik</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Projekter</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Resultater</a>
+            <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Publikationer</a>
+          </div>
+          <div class="card-footer">
+            <button class="icon-btn" aria-label="Luk" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()">
+              <svg width="32" height="32"><use href="#ico-minus"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const mouse = document.getElementById('blobMouse');
+
+  let curX = window.innerWidth / 2;
+  let curY = window.innerHeight / 2;
+  let tgX  = curX;
+  let tgY  = curY;
+  let hasMovedOnce = false;
+
+  document.addEventListener('mousemove', (e) => {
+    tgX = e.clientX;
+    tgY = e.clientY;
+    if (!hasMovedOnce) {
+      hasMovedOnce = true;
+      mouse.classList.add('visible');
+    }
+  });
+
+  function flip(card) { card.classList.toggle('flipped'); }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function tick() {
+    curX = lerp(curX, tgX, 0.06);
+    curY = lerp(curY, tgY, 0.06);
+    mouse.style.left = Math.round(curX) + 'px';
+    mouse.style.top  = Math.round(curY) + 'px';
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+</script>
+
+</body>
+</html>
