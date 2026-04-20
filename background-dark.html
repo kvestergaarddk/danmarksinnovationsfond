@@ -409,6 +409,44 @@
 </div>
 
 <script>
+  /* ── KONFIGURATION ─────────────────────────────────────────────
+     Justér disse værdier for at ændre baggrunden.
+     ──────────────────────────────────────────────────────────── */
+  const CONFIG = {
+    bgColor:          '#08006F',   // Baggrundsfarve
+
+    // Blob-farver (RGB uden alpha)
+    blob1Color:       '10, 99, 250',    // Blå
+    blob2Color:       '80, 40, 180',    // Lilla
+    blob3Color:       '0, 180, 255',    // Lyseblå
+    mouseColor:       '10, 99, 250',    // Mouse-følger
+
+    // Blob-opaciteter (0–1)
+    blob1Opacity:     0.60,
+    blob2Opacity:     0.65,
+    blob3Opacity:     0.35,
+    mouseOpacity:     0.40,
+
+    // Blob-størrelser (vw = % af skærmbredden)
+    blob1Size:        75,
+    blob2Size:        65,
+    blob3Size:        55,
+    mouseBlobSize:    50,
+
+    // Blur (px)
+    blobBlur:         60,
+    mouseBlur:        40,
+
+    // Animationshastigheder (sekunder per loop)
+    orbit1Speed:      14,
+    orbit2Speed:      18,
+    orbit3Speed:      22,
+
+    // Mouse-følger — hvor hurtigt den indhenter musen (0.01 = træg, 0.2 = hurtig)
+    mouseLerp:        0.06,
+  };
+  /* ────────────────────────────────────────────────────────────── */
+
   const mouse = document.getElementById('blobMouse');
 
   let curX = window.innerWidth / 2;
@@ -431,8 +469,8 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
 
   function tick() {
-    curX = lerp(curX, tgX, 0.06);
-    curY = lerp(curY, tgY, 0.06);
+    curX = lerp(curX, tgX, CONFIG.mouseLerp);
+    curY = lerp(curY, tgY, CONFIG.mouseLerp);
     mouse.style.left = Math.round(curX) + 'px';
     mouse.style.top  = Math.round(curY) + 'px';
     requestAnimationFrame(tick);
