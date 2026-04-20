@@ -374,10 +374,33 @@
 </head>
 <body>
 
-<a href="DI-background.html" download style="position:fixed;top:20px;right:20px;z-index:100;display:flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid rgba(8,0,111,0.3);color:#08006F;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.02em;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#08006F'" onmouseout="this.style.borderColor='rgba(8,0,111,0.3)'">
-  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="#08006F" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter"/></svg>
-  Hent fil
-</a>
+<div style="position:fixed;top:20px;right:20px;z-index:100;display:flex;gap:8px;font-family:'Inter',sans-serif;">
+  <button onclick="showCode()" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid rgba(8,0,111,0.3);background:transparent;color:#08006F;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#08006F'" onmouseout="this.style.borderColor='rgba(8,0,111,0.3)'">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 5l4 3-4 3M8 11h6" stroke="#08006F" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+    Vis kode
+  </button>
+  <a href="DI-background.html" download style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid rgba(8,0,111,0.3);color:#08006F;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.02em;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#08006F'" onmouseout="this.style.borderColor='rgba(8,0,111,0.3)'">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="#08006F" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+    Hent fil
+  </a>
+</div>
+
+<div id="codeOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);padding:40px;">
+  <div style="position:relative;height:100%;background:#0d1117;border:1px solid rgba(255,255,255,0.15);overflow:hidden;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.1);">
+      <span style="font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);">DI-background.html</span>
+      <button onclick="document.getElementById('codeOverlay').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;padding:0;line-height:1;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">✕</button>
+    </div>
+    <pre id="codeContent" style="flex:1;overflow:auto;padding:24px;margin:0;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.6;color:#e6edf3;white-space:pre;"></pre>
+  </div>
+</div>
+
+<script>
+function showCode() {
+  document.getElementById('codeContent').textContent = document.documentElement.outerHTML;
+  document.getElementById('codeOverlay').style.display = 'block';
+}
+</script>
 
 <div class="bg">
   <div class="blobs">
