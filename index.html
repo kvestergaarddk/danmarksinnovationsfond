@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danmarks Innovationsfond</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -37,17 +37,14 @@
       opacity: 0.5;
       margin-bottom: 40px;
     }
-    .links {
-      display: flex;
-      flex-direction: column;
-    }
+    .links { display: flex; flex-direction: column; }
     .row {
       display: flex;
       align-items: center;
       border-bottom: 1px solid #08006F;
     }
     .row:first-child { border-top: 1px solid #08006F; }
-    a.link {
+    a.link, button.link {
       flex: 1;
       display: flex;
       align-items: center;
@@ -61,23 +58,191 @@
       line-height: 26px;
       transition: gap 0.2s ease;
       gap: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
     }
-    a.link:hover { gap: 16px; }
+    a.link:hover, button.link:hover { gap: 16px; }
     .arrow { flex-shrink: 0; opacity: 0.5; }
-    a.download {
+
+    /* ── Menu overlay ── */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .menu-overlay__image {
+      flex: 0 0 37%;
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-overlay__image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      z-index: 0;
+      transition: opacity 0.45s ease;
+    }
+    .menu-overlay__panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .luk-menu {
+      position: absolute;
+      top: 69px;
+      right: 80px;
+      z-index: 20;
       display: flex;
       align-items: center;
-      padding: 20px 0 20px 20px;
-      color: #08006F;
-      opacity: 0.4;
-      text-decoration: none;
-      transition: opacity 0.15s;
-      flex-shrink: 0;
+      gap: 10px;
+      padding: 0 20px;
+      height: 50px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
     }
-    a.download:hover { opacity: 1; }
+    .luk-menu:hover { background: #0855d4; }
+    .luk-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+    }
+    .luk-icon::before,
+    .luk-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0;
+      width: 14px; height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+    .luk-icon::before { transform: translateY(-50%) rotate(45deg); }
+    .luk-icon::after  { transform: translateY(-50%) rotate(-45deg); }
+
+    /* Hoved-menu */
+    .menu-overlay__main {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      padding: 130px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .menu-overlay__main.hidden {
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+    }
+
+    /* Under-menu */
+    .menu-overlay__sub {
+      position: absolute;
+      inset: 0;
+      background: #08006F;
+      padding: 106px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .menu-overlay__sub.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .nav-primary a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 64px;
+      line-height: 68px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .nav-primary a:hover { color: #88B2FF; }
+    .nav-primary a:hover .chevron path { stroke: #88B2FF; }
+
+    .nav-secondary { display: flex; flex-direction: column; gap: 6px; }
+    .nav-secondary a {
+      display: block;
+      padding: 4px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .nav-secondary a:hover { color: #88B2FF; }
+    .chevron { flex-shrink: 0; opacity: 0.5; }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      width: fit-content;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: #ffffff; }
+
+    .nav-sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 38px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .nav-sub a:hover { color: #88B2FF; }
+    .nav-sub a:hover .chevron path { stroke: #88B2FF; }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h1>Danmarks Innovationsfond</h1>
     <p>Visuelle koncepter til review</p>
@@ -89,8 +254,14 @@
         </a>
       </div>
       <div class="row">
-        <a class="link" href="menu.html">
+        <button class="link" onclick="openMenu()">
           Menu
+          <svg class="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M7 3L10 6L7 9" stroke="#08006F" stroke-width="1.2" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+        </button>
+      </div>
+      <div class="row">
+        <a class="link" href="header-gradient.html">
+          Gradient hero
           <svg class="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M7 3L10 6L7 9" stroke="#08006F" stroke-width="1.2" stroke-linecap="square" stroke-linejoin="miter"/></svg>
         </a>
       </div>
@@ -120,5 +291,126 @@
       </div>
     </div>
   </div>
+
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay">
+
+  <div class="menu-overlay__image" id="menuImages">
+    <img src="Submenu/GettyImages-1309776258.jpg"  alt="Iværksætter">
+    <img src="Submenu/GettyImages-1323369662.jpg"  alt="Virksomhed">
+    <img src="Submenu/GettyImages-1729701910.jpg"  alt="Offentlig virksomhed">
+    <img src="Submenu/GettyImages-181075945.jpg"   alt="Forsker">
+    <img src="Submenu/GettyImages-2192500774.jpg"  alt="Ansøgningsrådgiver">
+    <img src="Submenu/GettyImages-2196741236.jpg"  alt="Bevillingshaver">
+    <img src="Submenu/GettyImages-2200067106.jpg"  alt="GTS, NHO">
+    <img src="Submenu/GettyImages-2205819842.jpg"  alt="Presse / Partner">
+  </div>
+
+  <div class="menu-overlay__panel">
+
+    <button class="luk-menu" onclick="closeMenu()">
+      <span class="luk-icon"></span>
+      Luk Menu
+    </button>
+
+    <!-- Hoved-menu -->
+    <div class="menu-overlay__main" id="menuMain">
+      <nav class="nav-primary">
+        <a onclick="visUnderMenu()">
+          For dig der er
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Søg investering
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Vi investerer i
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </nav>
+      <nav class="nav-secondary">
+        <a href="#">Viden og Data</a>
+        <a href="#">Programmer</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Om Fonden</a>
+      </nav>
+    </div>
+
+    <!-- Under-menu -->
+    <div class="menu-overlay__sub" id="menuSub">
+      <div class="back-link" onclick="visHovedMenu()">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+          <path d="M5 1L1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        For dig der er
+      </div>
+      <nav class="nav-sub">
+        <a href="#" data-img="0">Iværksætter <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="1">Virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="2">Offentlig virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="3">Forsker <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="4">Ansøgningsrådgiver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="5">Bevillingshaver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="6">GTS, NHO <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="7">Presse / Partner <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openMenu() {
+    document.getElementById('menuOverlay').classList.add('open');
+  }
+
+  function closeMenu() {
+    document.getElementById('menuOverlay').classList.remove('open');
+    document.getElementById('menuMain').classList.remove('hidden');
+    document.getElementById('menuSub').classList.remove('visible');
+  }
+
+  function visUnderMenu() {
+    document.getElementById('menuMain').classList.add('hidden');
+    document.getElementById('menuSub').classList.add('visible');
+  }
+
+  function visHovedMenu() {
+    document.getElementById('menuSub').classList.remove('visible');
+    document.getElementById('menuMain').classList.remove('hidden');
+  }
+
+  // Billedskift i undermenu
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuImgs = Array.from(document.querySelectorAll('#menuImages img'));
+    let current = 4;
+
+    menuImgs[4].style.opacity = 1;
+    menuImgs[4].style.zIndex = 1;
+
+    document.querySelectorAll('.nav-sub a[data-img]').forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const next = parseInt(link.dataset.img);
+        if (next === current) return;
+        menuImgs[next].style.zIndex = 2;
+        menuImgs[next].style.opacity = 1;
+        const prev = current;
+        setTimeout(() => {
+          menuImgs[prev].style.opacity = 0;
+          menuImgs[prev].style.zIndex = 0;
+        }, 450);
+        current = next;
+      });
+    });
+  });
+</script>
+
 </body>
 </html>

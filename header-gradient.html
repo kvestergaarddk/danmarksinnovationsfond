@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Hero — Danmarks Innovationsfond</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+
+  <!-- ════════════════════════════════════════════════════════════
+       KONFIGURATION — justér disse værdier
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  const CONFIG = {
+    colorBrandDark:   '#08006F',
+    colorBrandBlue:   '#0A63FA',
+    colorLight:       '#ffffff',
+    colorHover:       '#88B2FF',
+
+    // Gradient hero
+    heroBase:         '#03002A',    // Baggrundsfarve (meget mørk navy)
+    blob1Color:       '10, 70, 240',   // Stor sweeping blob (RGB)
+    blob2Color:       '80, 140, 255',  // Lyst highlight (RGB)
+    blob3Color:       '20, 50, 180',   // Dyb blå masse (RGB)
+    blob4Color:       '160, 200, 255', // Lille lys accent (RGB)
+    mouseBlobColor:   '60, 120, 255',  // Mouse-følger (RGB)
+    blobBlur:         100,          // px — blur på blob-laget
+    mouseBlobSize:    700,          // px — størrelse på mouse-blob
+    mouseLerp:        0.05,         // 0–1 — where 0=ingen bevægelse, 1=instant
+    speed1:           28,           // sekunder — blob 1 animation
+    speed2:           35,           // sekunder — blob 2 animation
+    speed3:           22,           // sekunder — blob 3 animation
+    speed4:           18,           // sekunder — blob 4 animation
+  };
+  </script>
+  <!-- ════════════════════════════════════════════════════════════ -->
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #08006F;
+    }
+
+    /* ── Utility topbar ── */
+    .topbar {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 6px 80px;
+      border-bottom: 1px solid rgba(8,0,111,0.08);
+    }
+
+    .topbar__link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 12px 3px 4px;
+      background: #ffffff;
+      border-radius: 23px;
+      text-decoration: none;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .topbar__link:hover { color: #0A63FA; }
+    .topbar__link img { width: 22px; height: 22px; }
+
+    .topbar__lang {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 10px;
+      border: 2px solid #08006F;
+      border-radius: 95px;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .topbar__lang:hover { opacity: 0.7; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 36px);
+      min-height: 640px;
+      overflow: hidden;
+      background: #03002A;
+    }
+
+    /* ── Gradient blob-lag ── */
+    .hero__gradient {
+      position: absolute;
+      inset: -150px; /* negativ margin forhindrer blur-kant-klip */
+      pointer-events: none;
+    }
+
+    .grad-blob {
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+    }
+
+    /* Stor, sweeping blob — fylder venstre-centrum */
+    .grad-blob-1 {
+      width: 130%; height: 90%;
+      top: -15%; left: -15%;
+      animation: gb1 28s ease-in-out infinite;
+    }
+
+    /* Lys highlight — top-højre */
+    .grad-blob-2 {
+      width: 90%; height: 90%;
+      top: -35%; right: -5%;
+      animation: gb2 35s ease-in-out infinite;
+    }
+
+    /* Dyb blå masse — bund */
+    .grad-blob-3 {
+      width: 110%; height: 75%;
+      bottom: -15%; left: 5%;
+      animation: gb3 22s ease-in-out infinite;
+    }
+
+    /* Lille lys accent — midt */
+    .grad-blob-4 {
+      width: 55%; height: 55%;
+      top: 5%; left: 25%;
+      animation: gb4 18s ease-in-out infinite;
+    }
+
+    /* Mouse-følger */
+    .grad-blob-mouse {
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .grad-blob-mouse.visible { opacity: 1; }
+
+    @keyframes gb1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      25%     { transform: translate(12%, -8%) scale(1.08); }
+      55%     { transform: translate(-6%, 14%) scale(0.94); }
+      80%     { transform: translate(8%, 6%) scale(1.04); }
+    }
+
+    @keyframes gb2 {
+      0%,100% { transform: translate(0,0) scale(1.05); }
+      35%     { transform: translate(-18%, 18%) scale(0.88); }
+      65%     { transform: translate(-8%, 28%) scale(1.12); }
+    }
+
+    @keyframes gb3 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      40%     { transform: translate(-12%, -18%) scale(1.14); }
+      75%     { transform: translate(8%, -8%) scale(0.96); }
+    }
+
+    @keyframes gb4 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      30%     { transform: translate(22%, -18%) scale(1.22); }
+      70%     { transform: translate(-12%, 12%) scale(0.82); }
+    }
+
+    /* Subtilt lys-overlay i bunden for tekstlæsbarhed */
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,10,0.75) 0%,
+        rgba(0,0,10,0.15) 50%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 80px;
+    }
+
+    .nav__logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .nav__logo-mark { height: 44px; }
+
+    .nav__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-search {
+      width: 50px; height: 50px;
+      background: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-search:hover { opacity: 0.85; }
+    .btn-search img { width: 22px; height: 22px; }
+
+    .btn-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 50px;
+      padding: 0 20px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-menu:hover { background: #0855d4; }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 4.5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 16px; height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+
+    /* ── Hero indhold ── */
+    .hero__content {
+      position: absolute;
+      bottom: 0; left: 0;
+      padding: 80px;
+      max-width: 680px;
+      z-index: 10;
+    }
+
+    .hero__title {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 72px;
+      line-height: 68px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .hero__manchet {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 26px;
+      line-height: 34px;
+      color: #ffffff;
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+
+    .btn-laes {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 2px solid #ffffff;
+      border-radius: 133px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-laes:hover { background: #ffffff; color: #08006F; }
+
+    /* ── Menu overlay ── */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .menu-overlay__image {
+      flex: 0 0 37%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-overlay__image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      z-index: 0;
+      transition: opacity 0.45s ease;
+    }
+
+    .menu-overlay__panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .luk-menu {
+      position: absolute;
+      top: 69px;
+      right: 80px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      height: 50px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .luk-menu:hover { background: #0855d4; }
+
+    .luk-icon { position: relative; width: 14px; height: 14px; }
+
+    .luk-icon::before,
+    .luk-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0;
+      width: 14px; height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+
+    .luk-icon::before { transform: translateY(-50%) rotate(45deg); }
+    .luk-icon::after  { transform: translateY(-50%) rotate(-45deg); }
+
+    .menu-overlay__main {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      padding: 130px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .menu-overlay__main.hidden {
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+    }
+
+    .menu-overlay__sub {
+      position: absolute;
+      inset: 0;
+      background: #08006F;
+      padding: 106px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .menu-overlay__sub.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .nav-primary a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 64px;
+      line-height: 68px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-primary a:hover { color: #88B2FF; }
+    .nav-primary a:hover .chevron path { stroke: #88B2FF; }
+
+    .nav-secondary { display: flex; flex-direction: column; gap: 6px; }
+
+    .nav-secondary a {
+      display: block;
+      padding: 4px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-secondary a:hover { color: #88B2FF; }
+    .chevron { flex-shrink: 0; opacity: 0.5; }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      width: fit-content;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #ffffff; }
+
+    .nav-sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 38px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-sub a:hover { color: #88B2FF; }
+    .nav-sub a:hover .chevron path { stroke: #88B2FF; }
+  </style>
+</head>
+<body>
+
+<!-- UTILITY TOPBAR -->
+<div class="topbar">
+  <a class="topbar__link" href="#">
+    <img src="Assets/UserCircle.svg" alt="">
+    Mit overblik
+  </a>
+  <a class="topbar__link" href="#">
+    <img src="Assets/Question.svg" alt="">
+    Hjælp og svar
+  </a>
+  <span class="topbar__lang">EN</span>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+
+  <!-- Animeret gradient baggrund -->
+  <div class="hero__gradient" id="heroGradient">
+    <div class="grad-blob grad-blob-1" id="gb1"></div>
+    <div class="grad-blob grad-blob-2" id="gb2"></div>
+    <div class="grad-blob grad-blob-3" id="gb3"></div>
+    <div class="grad-blob grad-blob-4" id="gb4"></div>
+    <div class="grad-blob grad-blob-mouse" id="gbMouse"></div>
+  </div>
+
+  <div class="hero__overlay"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a class="nav__logo" href="#">
+      <img class="nav__logo-mark" src="Assets/Danmarks-Innovationsfond_Negative_RGB 1.svg" alt="Danmarks Innovationsfond">
+    </a>
+    <div class="nav__actions">
+      <button class="btn-search">
+        <img src="Assets/MagnifyingGlass.svg" alt="Søg">
+      </button>
+      <button class="btn-menu" onclick="openMenu()">
+        <span class="hamburger">
+          <span></span><span></span><span></span>
+        </span>
+        Menu
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero indhold -->
+  <div class="hero__content">
+    <h1 class="hero__title">Vi investerer<br>i fremtiden</h1>
+    <p class="hero__manchet">Innovationsfonden investerer i forskning, teknologi og nye løsninger, der kan skabe vækst og løse samfundets store udfordringer.</p>
+    <a class="btn-laes" href="#">Læs mere →</a>
+  </div>
+</section>
+
+<script>
+  // ── Byg blobs fra CONFIG ──────────────────────────────────────
+  document.getElementById('hero').style.background = CONFIG.heroBase;
+
+  const blobDefs = [
+    { id: 'gb1', color: CONFIG.blob1Color,  opacity: 0.92, dur: CONFIG.speed1 },
+    { id: 'gb2', color: CONFIG.blob2Color,  opacity: 0.88, dur: CONFIG.speed2 },
+    { id: 'gb3', color: CONFIG.blob3Color,  opacity: 0.85, dur: CONFIG.speed3 },
+    { id: 'gb4', color: CONFIG.blob4Color,  opacity: 0.75, dur: CONFIG.speed4 },
+  ];
+
+  blobDefs.forEach(b => {
+    const el = document.getElementById(b.id);
+    el.style.background = `radial-gradient(circle at 50% 50%, rgba(${b.color},${b.opacity}) 0%, transparent 60%)`;
+    el.style.animationDuration = b.dur + 's';
+  });
+
+  // Mouse blob
+  const gbMouse = document.getElementById('gbMouse');
+  const s = CONFIG.mouseBlobSize;
+  gbMouse.style.width  = s + 'px';
+  gbMouse.style.height = s + 'px';
+  gbMouse.style.background = `radial-gradient(circle at 50% 50%, rgba(${CONFIG.mouseBlobColor},0.55) 0%, transparent 60%)`;
+
+  // Blur på blob-laget
+  document.getElementById('heroGradient').style.filter = `blur(${CONFIG.blobBlur}px)`;
+
+  // Mouse-følger
+  let curX = window.innerWidth / 2;
+  let curY = window.innerHeight / 2;
+  let tgX = curX, tgY = curY;
+  let moved = false;
+
+  document.addEventListener('mousemove', e => {
+    tgX = e.clientX;
+    tgY = e.clientY;
+    if (!moved) { moved = true; gbMouse.classList.add('visible'); }
+  });
+
+  (function tick() {
+    curX += (tgX - curX) * CONFIG.mouseLerp;
+    curY += (tgY - curY) * CONFIG.mouseLerp;
+    gbMouse.style.left = Math.round(curX) + 'px';
+    gbMouse.style.top  = Math.round(curY) + 'px';
+    requestAnimationFrame(tick);
+  })();
+
+  // ── Menu ─────────────────────────────────────────────────────
+  function openMenu() {
+    document.getElementById('menuOverlay').classList.add('open');
+  }
+
+  function closeMenu() {
+    document.getElementById('menuOverlay').classList.remove('open');
+    document.getElementById('menuMain').classList.remove('hidden');
+    document.getElementById('menuSub').classList.remove('visible');
+  }
+
+  function visUnderMenu() {
+    document.getElementById('menuMain').classList.add('hidden');
+    document.getElementById('menuSub').classList.add('visible');
+  }
+
+  function visHovedMenu() {
+    document.getElementById('menuSub').classList.remove('visible');
+    document.getElementById('menuMain').classList.remove('hidden');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuImgs = Array.from(document.querySelectorAll('#menuImages img'));
+    let current = 4;
+    menuImgs[4].style.opacity = 1;
+    menuImgs[4].style.zIndex  = 1;
+
+    document.querySelectorAll('.nav-sub a[data-img]').forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const next = parseInt(link.dataset.img);
+        if (next === current) return;
+        menuImgs[next].style.zIndex  = 2;
+        menuImgs[next].style.opacity = 1;
+        const prev = current;
+        setTimeout(() => {
+          menuImgs[prev].style.opacity = 0;
+          menuImgs[prev].style.zIndex  = 0;
+        }, 450);
+        current = next;
+      });
+    });
+  });
+</script>
+
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay">
+
+  <div class="menu-overlay__image" id="menuImages">
+    <img src="Submenu/GettyImages-1309776258.jpg" alt="Iværksætter">
+    <img src="Submenu/GettyImages-1323369662.jpg" alt="Virksomhed">
+    <img src="Submenu/GettyImages-1729701910.jpg" alt="Offentlig virksomhed">
+    <img src="Submenu/GettyImages-181075945.jpg"  alt="Forsker">
+    <img src="Submenu/GettyImages-2192500774.jpg" alt="Ansøgningsrådgiver">
+    <img src="Submenu/GettyImages-2196741236.jpg" alt="Bevillingshaver">
+    <img src="Submenu/GettyImages-2200067106.jpg" alt="GTS, NHO">
+    <img src="Submenu/GettyImages-2205819842.jpg" alt="Presse / Partner">
+  </div>
+
+  <div class="menu-overlay__panel">
+    <button class="luk-menu" onclick="closeMenu()">
+      <span class="luk-icon"></span>
+      Luk Menu
+    </button>
+
+    <div class="menu-overlay__main" id="menuMain">
+      <nav class="nav-primary">
+        <a onclick="visUnderMenu()">
+          For dig der er
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">
+          Søg investering
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">
+          Vi investerer i
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </nav>
+      <nav class="nav-secondary">
+        <a href="#">Viden og Data</a>
+        <a href="#">Programmer</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Om Fonden</a>
+      </nav>
+    </div>
+
+    <div class="menu-overlay__sub" id="menuSub">
+      <div class="back-link" onclick="visHovedMenu()">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M5 1L1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        For dig der er
+      </div>
+      <nav class="nav-sub">
+        <a href="#" data-img="0">Iværksætter <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="1">Virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="2">Offentlig virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="3">Forsker <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="4">Ansøgningsrådgiver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="5">Bevillingshaver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="6">GTS, NHO <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="7">Presse / Partner <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

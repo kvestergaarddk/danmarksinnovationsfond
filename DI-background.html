@@ -245,7 +245,7 @@
       pointer-events: none;
     }
 
-    .card-wrap:not(.flipped):hover .card-front::before { opacity: 1; }
+    /* .card-wrap:not(.flipped):hover .card-front::before { opacity: 1; } */
 
     /* ── Kortindhold ── */
     .card-body {
@@ -575,8 +575,9 @@ function showCode() {
 </div>
 
 <script>
-  const mouse = document.getElementById('blobMouse');
+  function flip(card) { card.classList.toggle('flipped'); }
 
+  const mouse = document.getElementById('blobMouse');
   let curX = window.innerWidth / 2;
   let curY = window.innerHeight / 2;
   let tgX  = curX;
@@ -591,8 +592,6 @@ function showCode() {
       mouse.classList.add('visible');
     }
   });
-
-  function flip(card) { card.classList.toggle('flipped'); }
 
   function lerp(a, b, t) { return a + (b - a) * t; }
 
