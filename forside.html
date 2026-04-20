@@ -1061,11 +1061,11 @@
   // Billedskift i undermenu — crossfade uden gennemsigtig mellemtilstand
   document.addEventListener('DOMContentLoaded', () => {
     const menuImgs = Array.from(document.querySelectorAll('#menuImages img'));
-    let current = 0;
+    let current = 4;
 
-    // Vis første billede med det samme
-    menuImgs[0].style.opacity = 1;
-    menuImgs[0].style.zIndex = 1;
+    // Vis default billede med det samme
+    menuImgs[4].style.opacity = 1;
+    menuImgs[4].style.zIndex = 1;
 
     document.querySelectorAll('.nav-sub a[data-img]').forEach(link => {
       link.addEventListener('mouseenter', () => {
