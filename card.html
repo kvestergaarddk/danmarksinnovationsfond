@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kort — Grønne løsninger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Design tokens fra Figma ── */
+    :root {
+      --color-brand-light: #ffffff;
+      --typeface-family-headings: 'Parkinsans', sans-serif;
+      --typeface-family-body: 'Inter', sans-serif;
+      --typeface-size-h4: 24px;
+      --typeface-lineheight-h4: 28px;
+      --typeface-size-body-small: 14px;
+      --typeface-lineheight-small: 20px;
+      --border-radius-none: 0;
+      --padding-vertical-tiny: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f0eeea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── Kort: 620×775px, ingen border-radius ── */
+    .card {
+      position: relative;
+      width: 620px;
+      height: 775px;
+      overflow: hidden;
+      border-radius: var(--border-radius-none);
+    }
+
+    .card__image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card:hover .card__image {
+      transform: scale(1.05);
+    }
+
+    /*
+      Overlay container:
+        left: 0, top: 495px, width: 433px, padding: 40px
+      — præcis fra Figma node
+    */
+    .card__overlay {
+      position: absolute;
+      left: 0;
+      top: 495px;
+      width: 433px;
+      padding: 40px;
+    }
+
+    /*
+      Indhold: gap 16px, padding 24px
+      Baggrund: frosted glass — backdrop-filter matcher Figmas blureffekt
+    */
+    .card__content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 24px;
+      background: rgba(80, 100, 80, 0.38);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* gap-[8px] = --padding-vertical-tiny */
+    .card__text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-vertical-tiny);
+    }
+
+    .card__title {
+      font-family: var(--typeface-family-headings);
+      font-weight: 600;
+      font-size: var(--typeface-size-h4);
+      line-height: var(--typeface-lineheight-h4);
+      letter-spacing: 0;
+      color: var(--color-brand-light);
+    }
+
+    .card__description {
+      font-family: var(--typeface-family-body);
+      font-weight: 500;
+      font-size: var(--typeface-size-body-small);
+      line-height: var(--typeface-lineheight-small);
+      letter-spacing: 0;
+      color: var(--color-brand-light);
+    }
+
+    .card__icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* Cirkel: tegner sig rundt på hover — samme princip som DI-logoet */
+    .icon-circle {
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 0;
+      transform-origin: center;
+      transform: rotate(-90deg);
+    }
+
+    @keyframes draw-circle-hover {
+      from { stroke-dashoffset: 1; }
+      to   { stroke-dashoffset: 0; }
+    }
+
+    .card:hover .icon-circle {
+      stroke: #0A63FA;
+      animation: draw-circle-hover 0.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+
+    .icon-arrow {
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.7;
+      transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: center;
+    }
+
+    .card:hover .icon-arrow {
+      opacity: 1;
+      transform: translateX(1px);
+    }
+
+    .card__readmore {
+      font-family: var(--typeface-family-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: #ffffff;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition-delay: 0s;
+    }
+
+    .card:hover .card__readmore {
+      opacity: 1;
+      transform: translateX(0);
+      transition-delay: 0.55s;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <img
+      class="card__image"
+      src="https://www.figma.com/api/mcp/asset/9c2c82e6-d410-4770-a729-9a21c6ac9ef2"
+      alt="Forsker arbejder med grønne løsninger"
+    />
+    <div class="card__overlay">
+      <div class="card__content">
+        <div class="card__text">
+          <h2 class="card__title">Grønne løsninger</h2>
+          <p class="card__description">
+            Vi investerer i løsninger, der driver positiv forandring og skaber en mere bæredygtig fremtid.
+          </p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg class="card__icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <circle class="icon-circle" cx="10" cy="10" r="8" pathLength="1"/>
+          </svg>
+          <span class="card__readmore">Læs mere</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
