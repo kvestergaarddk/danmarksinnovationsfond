@@ -190,16 +190,28 @@
       100% { transform: translate(0,0) scale(1); }
     }
 
-    /* ── Grain overlay ── */
-    .hero__grain {
+    /* ── Grain overlay — to lag for analog film-look ── */
+    .hero__grain-fine {
       position: absolute;
       inset: 0;
       z-index: 5;
       pointer-events: none;
-      opacity: 0.32;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.60;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.68 0.87' numOctaves='4' seed='15' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
       background-repeat: repeat;
-      background-size: 256px 256px;
+      background-size: 251px 247px;
+      mix-blend-mode: soft-light;
+    }
+
+    .hero__grain-coarse {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.28;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.34 0.43' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 503px 511px;
       mix-blend-mode: overlay;
     }
 
@@ -311,6 +323,7 @@
 
     .hero__manchet {
       font-family: 'Parkinsans', sans-serif;
+      font-style: normal;
       font-weight: 600;
       font-size: 26px;
       line-height: 34px;
@@ -320,7 +333,8 @@
     }
 
     .btn-laes {
-      display: inline-flex;
+      display: flex;
+      width: fit-content;
       align-items: center;
       gap: 8px;
       padding: 8px 16px;
@@ -541,8 +555,10 @@
 <!-- HERO -->
 <section class="hero" id="hero">
 
-  <!-- Grain texture -->
-  <div class="hero__grain" id="heroGrain"></div>
+  <!-- Grain texture — fint lag -->
+  <div class="hero__grain-fine"></div>
+  <!-- Grain texture — groft lag -->
+  <div class="hero__grain-coarse"></div>
 
   <!-- Animeret gradient baggrund -->
   <div class="hero__gradient" id="heroGradient">
@@ -577,7 +593,7 @@
   <div class="hero__content">
     <h1 class="hero__title">Vi investerer<br>i fremtiden</h1>
     <p class="hero__manchet">Innovationsfonden investerer i forskning, teknologi og nye løsninger, der kan skabe vækst og løse samfundets store udfordringer.</p>
-    <a class="btn-laes" href="#">Læs mere →</a>
+    <a class="btn-laes" href="#">Læs mere <img src="Assets/ArrowRight.svg" alt="→"></a>
   </div>
 </section>
 
