@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danmarks Innovationsfond</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+
+  <!-- ════════════════════════════════════════════════════════════
+       KONFIGURATION
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  const CONFIG = {
+    colorBrandDark:   '#08006F',
+    colorBrandBlue:   '#0A63FA',
+    colorLight:       '#ffffff',
+    colorHover:       '#88B2FF',   // Hover-farve på menu-links
+    heroVideo:        'Tophero/GettyImages-1352496455.mp4', // ← sti til hero-video
+  };
+  </script>
+  <!-- ════════════════════════════════════════════════════════════ -->
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #08006F;
+    }
+
+    /* ── Utility topbar ── */
+    .topbar {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 6px 80px;
+      border-bottom: 1px solid rgba(8,0,111,0.08);
+    }
+
+    .topbar__link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 12px 3px 4px;
+      background: #ffffff;
+      border-radius: 23px;
+      text-decoration: none;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .topbar__link:hover { color: #0A63FA; }
+
+    .topbar__link img { width: 22px; height: 22px; }
+
+    .topbar__lang {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 10px;
+      border: 2px solid #08006F;
+      border-radius: 95px;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .topbar__lang:hover { opacity: 0.7; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 36px);
+      min-height: 640px;
+      overflow: hidden;
+      background: #1a1f3a;
+    }
+
+    .hero__video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.70) 0%,
+        rgba(0,0,0,0.25) 55%,
+        rgba(0,0,0,0.10) 100%
+      );
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 80px;
+    }
+
+    .nav__logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .nav__logo-mark { height: 44px; }
+    .nav__logo-text { height: 40px; }
+
+    .nav__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-search {
+      width: 50px; height: 50px;
+      background: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-search:hover { opacity: 0.85; }
+    .btn-search img { width: 22px; height: 22px; }
+
+    .btn-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 50px;
+      padding: 0 20px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-menu:hover { background: #0855d4; }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 4.5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 16px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+
+    /* ── Hero indhold ── */
+    .hero__content {
+      position: absolute;
+      bottom: 0; left: 0;
+      padding: 80px;
+      max-width: 680px;
+      z-index: 10;
+    }
+
+    .hero__title {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 72px;
+      line-height: 68px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .hero__manchet {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 26px;
+      line-height: 34px;
+      color: #ffffff;
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+
+    .btn-laes {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 2px solid #ffffff;
+      border-radius: 133px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-laes:hover { background: #ffffff; color: #08006F; }
+    .btn-laes img { width: 20px; height: 20px; }
+
+    /* ── Gradient baggrunds-sektion (flipcards) ── */
+    .section-flipcards {
+      position: relative;
+      padding: 80px 80px;
+      overflow: hidden;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+    }
+
+    .blobs {
+      position: absolute;
+      inset: 0;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: multiply;
+    }
+
+    .blob-a {
+      width: 70%; height: 70%;
+      background: radial-gradient(circle at center, rgba(10,99,250,0.28) 0%, transparent 70%);
+      top: -10%; left: -5%;
+      animation: float-a 14s ease-in-out infinite;
+    }
+
+    .blob-b {
+      width: 60%; height: 60%;
+      background: radial-gradient(circle at center, rgba(8,0,111,0.22) 0%, transparent 70%);
+      bottom: -10%; right: 5%;
+      animation: float-b 18s ease-in-out infinite;
+    }
+
+    .blob-c {
+      width: 50%; height: 50%;
+      background: radial-gradient(circle at center, rgba(65,130,255,0.20) 0%, transparent 70%);
+      top: 20%; right: 20%;
+      animation: float-c 22s ease-in-out infinite;
+    }
+
+    @keyframes float-a {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(8%,12%) scale(1.06); }
+      66%      { transform: translate(-6%,6%) scale(0.96); }
+    }
+
+    @keyframes float-b {
+      0%,100% { transform: translate(0,0) scale(1.04); }
+      50%     { transform: translate(-10%,-14%) scale(0.95); }
+    }
+
+    @keyframes float-c {
+      0%,100% { transform: translate(0,0) scale(1); }
+      40%     { transform: translate(-8%,10%) scale(1.07); }
+      80%     { transform: translate(6%,-8%) scale(0.97); }
+    }
+
+    .flipcards-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Flipcards ── */
+    .cards-grid {
+      display: flex;
+      gap: 24px;
+    }
+
+    .card-wrap {
+      width: 300px;
+      height: 430px;
+      flex-shrink: 0;
+      perspective: 1200px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-bottom: 1px solid #08006F;
+      border-right: 1px solid #08006F;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 0 10px;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .card-back { transform: rotateY(180deg); }
+
+    .card-front::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 100% 100%, rgba(10,99,250,0.28) 0%, rgba(10,99,250,0.10) 45%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card-wrap:not(.flipped):hover .card-front::before { opacity: 1; }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .card-back .card-body { justify-content: flex-start; }
+
+    .card-title {
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 28px;
+      color: #08006F;
+      margin: 0;
+    }
+
+    .card-desc {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      border-bottom: 1px solid #08006F;
+      padding-bottom: 24px;
+    }
+
+    .card-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 26px;
+      color: #08006F;
+      margin: 0;
+    }
+
+    .card-links {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: flex-end;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #08006F;
+    }
+
+    .card-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 26px;
+      color: #08006F;
+      text-decoration: none;
+      transition: gap 0.2s, color 0.15s;
+    }
+
+    .card-link:hover { gap: 14px; color: #88B2FF; }
+    .card-link svg { flex-shrink: 0; }
+
+    .card-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+
+    .icon-btn {
+      width: 32px; height: 32px;
+      border: none; background: transparent;
+      cursor: pointer; padding: 0; color: #08006F;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .icon-btn:hover { transform: scale(1.14); }
+
+    /* ── Statistik ── */
+    .section-stats {
+      padding: 80px 80px;
+      background: #f5f4f0;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(8,0,111,0.5);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Parkinsans', sans-serif;
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: #08006F;
+    }
+
+    .link-all {
+      font-size: 15px;
+      font-weight: 500;
+      color: #08006F;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #08006F;
+      padding-bottom: 2px;
+      align-self: flex-end;
+      transition: color 0.15s;
+    }
+
+    .link-all:hover { color: #88B2FF; border-color: #88B2FF; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .stat-divider { width: 40px; height: 2px; background: #08006F; margin-bottom: 16px; }
+
+    .stat-number {
+      font-family: 'Parkinsans', sans-serif;
+      font-size: 64px;
+      font-weight: 600;
+      color: #08006F;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .stat-desc {
+      font-size: 16px;
+      line-height: 24px;
+      color: #08006F;
+      opacity: 0.7;
+      max-width: 280px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #08006F;
+      padding: 60px 80px 40px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .footer-brand-name {
+      font-family: 'Parkinsans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .footer-brand-desc {
+      font-size: 14px;
+      line-height: 22px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+    }
+
+    .footer-address {
+      font-size: 13px;
+      line-height: 20px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-col-title {
+      font-family: 'Parkinsans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #88B2FF; }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-legal { font-size: 13px; color: rgba(255,255,255,0.4); }
+
+    .footer-social { display: flex; gap: 16px; }
+
+    .footer-social a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 13px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .footer-social a:hover { border-color: #88B2FF; color: #88B2FF; }
+
+    /* ── Menu overlay ── */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .menu-overlay__image {
+      flex: 0 0 37%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-overlay__image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      z-index: 0;
+      transition: opacity 0.45s ease;
+    }
+
+    .menu-overlay__panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Luk-knap — samme position som Menu-knappen */
+    .luk-menu {
+      position: absolute;
+      top: 69px;
+      right: 80px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      height: 50px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .luk-menu:hover { background: #0855d4; }
+
+    .luk-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+    }
+
+    .luk-icon::before,
+    .luk-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0;
+      width: 14px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+
+    .luk-icon::before { transform: translateY(-50%) rotate(45deg); }
+    .luk-icon::after  { transform: translateY(-50%) rotate(-45deg); }
+
+    /* Hoved-menu (hvid) */
+    .menu-overlay__main {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      padding: 130px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .menu-overlay__main.hidden {
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+    }
+
+    /* Under-menu (mørkeblå) */
+    .menu-overlay__sub {
+      position: absolute;
+      inset: 0;
+      background: #08006F;
+      padding: 106px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .menu-overlay__sub.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .nav-primary a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 64px;
+      line-height: 68px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-primary a:hover { color: #88B2FF; }
+    .nav-primary a:hover .chevron path { stroke: #88B2FF; }
+
+    .nav-secondary { display: flex; flex-direction: column; gap: 6px; }
+
+    .nav-secondary a {
+      display: block;
+      padding: 4px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-secondary a:hover { color: #88B2FF; }
+
+    .chevron { flex-shrink: 0; opacity: 0.5; }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      width: fit-content;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #ffffff; }
+
+    .nav-sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 38px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-sub a:hover { color: #88B2FF; }
+    .nav-sub a:hover .chevron path { stroke: #88B2FF; }
+  </style>
+</head>
+<body>
+
+<!-- SVG-ikoner -->
+<svg style="display:none">
+  <symbol id="ico-plus" viewBox="0 0 32 32" fill="none">
+    <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+    <path d="M11 16H21M16 11V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ico-minus" viewBox="0 0 32 32" fill="none">
+    <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+    <path d="M11 16H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 12 12" fill="none">
+    <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="square" stroke-linejoin="miter"/>
+  </symbol>
+  <symbol id="ico-arrow-right" viewBox="0 0 16 16" fill="none">
+    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<!-- UTILITY TOPBAR -->
+<div class="topbar">
+  <a class="topbar__link" href="#">
+    <img src="Assets/UserCircle.svg" alt="">
+    Mit overblik
+  </a>
+  <a class="topbar__link" href="#">
+    <img src="Assets/Question.svg" alt="">
+    Hjælp og svar
+  </a>
+  <span class="topbar__lang">EN</span>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <video class="hero__video" id="heroVideo" autoplay muted loop playsinline></video>
+  <div class="hero__overlay"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a class="nav__logo" href="#">
+      <img class="nav__logo-mark" src="Assets/Danmarks-Innovationsfond_Negative_RGB 1.svg" alt="Danmarks Innovationsfond">
+    </a>
+    <div class="nav__actions">
+      <button class="btn-search">
+        <img src="Assets/MagnifyingGlass.svg" alt="Søg">
+      </button>
+      <button class="btn-menu" onclick="openMenu()">
+        <span class="hamburger">
+          <span></span><span></span><span></span>
+        </span>
+        Menu
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero indhold -->
+  <div class="hero__content">
+    <h1 class="hero__title">Vi investerer<br>i fremtiden</h1>
+    <p class="hero__manchet">Innovationsfonden investerer i forskning, teknologi og nye løsninger, der kan skabe vækst og løse samfundets store udfordringer.</p>
+    <a class="btn-laes" href="#">
+      Læs mere
+      <img src="https://www.figma.com/api/mcp/asset/8e36ea51-db06-40f4-a41c-3ade7af079a3" alt="→">
+    </a>
+  </div>
+</section>
+
+<!-- FLIPCARDS -->
+<section class="section-flipcards">
+  <div class="bg-gradient"></div>
+  <div class="blobs">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="blob blob-c"></div>
+  </div>
+  <div class="flipcards-inner">
+    <div class="cards-grid">
+
+      <div class="card-wrap" onclick="flip(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-body">
+              <p class="card-title">Søger støtte</p>
+              <div class="card-desc"><p class="card-text">Find ud af om dit projekt kan få støtte og hvor du skal starte</p></div>
+            </div>
+            <div class="card-footer"><button class="icon-btn"><svg width="32" height="32"><use href="#ico-plus"/></svg></button></div>
+          </div>
+          <div class="card-back">
+            <div class="card-body"><p class="card-title">Vælg hvem du er og<br>se hvad du kan søge</p></div>
+            <div class="card-links">
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Iværksætter</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Virksomhed</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Forsker</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Offentlig organisation</a>
+            </div>
+            <div class="card-footer"><button class="icon-btn" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()"><svg width="32" height="32"><use href="#ico-minus"/></svg></button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-wrap" onclick="flip(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-body">
+              <p class="card-title">Hjælp andre</p>
+              <div class="card-desc"><p class="card-text">Få overblik og præcist materiale, så du kan rådgive om ansøgninger og programmer</p></div>
+            </div>
+            <div class="card-footer"><button class="icon-btn"><svg width="32" height="32"><use href="#ico-plus"/></svg></button></div>
+          </div>
+          <div class="card-back">
+            <div class="card-body"><p class="card-title">Vælg din rolle og<br>find det rette materiale</p></div>
+            <div class="card-links">
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Rådgiver</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Revisor</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Inkubator</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Erhvervshus</a>
+            </div>
+            <div class="card-footer"><button class="icon-btn" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()"><svg width="32" height="32"><use href="#ico-minus"/></svg></button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-wrap" onclick="flip(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-body">
+              <p class="card-title">Har en bevilling</p>
+              <div class="card-desc"><p class="card-text">Få overblik over dit projekt, krav og hvad du skal gøre næst</p></div>
+            </div>
+            <div class="card-footer"><button class="icon-btn"><svg width="32" height="32"><use href="#ico-plus"/></svg></button></div>
+          </div>
+          <div class="card-back">
+            <div class="card-body"><p class="card-title">Hvad ønsker<br>du hjælp til?</p></div>
+            <div class="card-links">
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Afrapportering</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Projektændringer</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Økonomi</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Kommunikation</a>
+            </div>
+            <div class="card-footer"><button class="icon-btn" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()"><svg width="32" height="32"><use href="#ico-minus"/></svg></button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-wrap" onclick="flip(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-body">
+              <p class="card-title">Få viden</p>
+              <div class="card-desc"><p class="card-text">Udforsk data, projekter og resultater fra fonden</p></div>
+            </div>
+            <div class="card-footer"><button class="icon-btn"><svg width="32" height="32"><use href="#ico-plus"/></svg></button></div>
+          </div>
+          <div class="card-back">
+            <div class="card-body"><p class="card-title">Hvad ønsker du<br>at udforske?</p></div>
+            <div class="card-links">
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Data og statistik</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Projekter</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Resultater</a>
+              <a class="card-link" href="#"><svg width="12" height="12"><use href="#ico-arrow"/></svg>Publikationer</a>
+            </div>
+            <div class="card-footer"><button class="icon-btn" onclick="flip(this.closest('.card-wrap'));event.stopPropagation()"><svg width="32" height="32"><use href="#ico-minus"/></svg></button></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATISTIK -->
+<section class="section-stats">
+  <div class="stats-header">
+    <div>
+      <p class="section-label">Resultater</p>
+      <h2 class="section-title">Vores investeringer i tal</h2>
+    </div>
+    <a class="link-all" href="#">
+      Se alle tal
+      <svg width="16" height="16"><use href="#ico-arrow-right"/></svg>
+    </a>
+  </div>
+  <div class="stats-grid">
+    <div>
+      <div class="stat-divider"></div>
+      <p class="stat-number">7,4 mia.</p>
+      <p class="stat-desc">Bevilget til Danmarks Innovationsfond projekter siden fondens oprettelse</p>
+    </div>
+    <div>
+      <div class="stat-divider"></div>
+      <p class="stat-number">2.000</p>
+      <p class="stat-desc">Projekter støttet af Innovationsfonden på tværs af alle programmer</p>
+    </div>
+    <div>
+      <div class="stat-divider"></div>
+      <p class="stat-number">2.799</p>
+      <p class="stat-desc">Virksomheder og organisationer har deltaget i fondens projekter</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">
+        <svg width="36" height="36" viewBox="0 0 390 403" fill="none">
+          <path fill="#ffffff" d="M297.952 45.6357L269.184 94.9514C307.107 119.241 332.297 161.38 332.297 209.316C332.297 257.252 304.644 303.531 263.56 327.085C243.344 338.678 219.874 345.348 194.824 345.348C169.774 345.348 146.35 338.678 126.087 327.131C85.0029 303.531 57.3503 259.552 57.3503 209.316C57.3503 159.08 82.5398 119.195 120.463 94.9514L91.6954 45.6357C36.7153 79.7243 0 140.311 0 209.27C0 278.229 39.225 342.864 97.4583 376.309C126.133 392.778 159.41 402.208 194.917 402.208C230.424 402.208 263.653 392.778 292.375 376.309C350.562 342.864 389.833 280.529 389.833 209.27C389.833 138.011 353.118 79.7243 298.045 45.6357H297.952Z"/>
+          <path fill="#ffffff" d="M194.858 56.9063C219.862 56.9063 243.332 63.5768 263.595 75.1236L292.316 25.8999C263.641 9.43071 230.365 0 194.858 0C159.351 0 126.121 9.43071 97.4462 25.8999L126.168 75.1236C146.384 63.5308 169.854 56.9063 194.858 56.9063Z"/>
+        </svg>
+        <span class="footer-brand-name">Danmarks<br>Innovationsfond</span>
+      </div>
+      <p class="footer-brand-desc">Innovationsfonden investerer i forskning, teknologi og nye løsninger.</p>
+      <p class="footer-address">Kalkværksvej 16, 7<br>8000 Aarhus C</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Programmer</p>
+      <ul class="footer-links">
+        <li><a href="#">Grand Solution</a></li>
+        <li><a href="#">InnoBooster</a></li>
+        <li><a href="#">Innomission</a></li>
+        <li><a href="#">Se alle</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Om Fonden</p>
+      <ul class="footer-links">
+        <li><a href="#">Vores mission</a></li>
+        <li><a href="#">Bestyrelse</a></li>
+        <li><a href="#">Årsrapport</a></li>
+        <li><a href="#">Karriere</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Indblik</p>
+      <ul class="footer-links">
+        <li><a href="#">Nyheder</a></li>
+        <li><a href="#">Analyser</a></li>
+        <li><a href="#">Publikationer</a></li>
+        <li><a href="#">Resultater</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-legal">© 2026 Danmarks Innovationsfond · Privatlivspolitik · Cookies</p>
+    <div class="footer-social">
+      <a href="#" aria-label="LinkedIn">in</a>
+      <a href="#" aria-label="Twitter">𝕏</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function flip(card) { card.classList.toggle('flipped'); }
+
+  if (CONFIG.heroVideo) {
+    document.getElementById('heroVideo').src = CONFIG.heroVideo;
+  }
+
+  function openMenu() {
+    document.getElementById('menuOverlay').classList.add('open');
+  }
+
+  function closeMenu() {
+    document.getElementById('menuOverlay').classList.remove('open');
+    document.getElementById('menuMain').classList.remove('hidden');
+    document.getElementById('menuSub').classList.remove('visible');
+  }
+
+  function visUnderMenu() {
+    document.getElementById('menuMain').classList.add('hidden');
+    document.getElementById('menuSub').classList.add('visible');
+  }
+
+  function visHovedMenu() {
+    document.getElementById('menuSub').classList.remove('visible');
+    document.getElementById('menuMain').classList.remove('hidden');
+  }
+
+  // Billedskift i undermenu — crossfade uden gennemsigtig mellemtilstand
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuImgs = Array.from(document.querySelectorAll('#menuImages img'));
+    let current = 0;
+
+    // Vis første billede med det samme
+    menuImgs[0].style.opacity = 1;
+    menuImgs[0].style.zIndex = 1;
+
+    document.querySelectorAll('.nav-sub a[data-img]').forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const next = parseInt(link.dataset.img);
+        if (next === current) return;
+
+        // Nyt billede fader ind ovenpå
+        menuImgs[next].style.zIndex = 2;
+        menuImgs[next].style.opacity = 1;
+
+        // Gammelt billede forbliver synligt nedenunder, skjules efter transition
+        const prev = current;
+        setTimeout(() => {
+          menuImgs[prev].style.opacity = 0;
+          menuImgs[prev].style.zIndex = 0;
+        }, 450);
+
+        current = next;
+      });
+    });
+  });
+</script>
+
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay">
+
+  <div class="menu-overlay__image" id="menuImages">
+    <img src="Submenu/GettyImages-1309776258.jpg"  class="active" alt="Iværksætter">
+    <img src="Submenu/GettyImages-1323369662.jpg"  alt="Virksomhed">
+    <img src="Submenu/GettyImages-1729701910.jpg"  alt="Offentlig virksomhed">
+    <img src="Submenu/GettyImages-181075945.jpg"   alt="Forsker">
+    <img src="Submenu/GettyImages-2192500774.jpg"  alt="Ansøgningsrådgiver">
+    <img src="Submenu/GettyImages-2196741236.jpg"  alt="Bevillingshaver">
+    <img src="Submenu/GettyImages-2200067106.jpg"  alt="GTS, NHO">
+    <img src="Submenu/GettyImages-2205819842.jpg"  alt="Presse / Partner">
+  </div>
+
+  <div class="menu-overlay__panel">
+
+    <button class="luk-menu" onclick="closeMenu()">
+      <span class="luk-icon"></span>
+      Luk Menu
+    </button>
+
+    <!-- Hoved-menu -->
+    <div class="menu-overlay__main" id="menuMain">
+      <nav class="nav-primary">
+        <a onclick="visUnderMenu()">
+          For dig der er
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Søg investering
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Vi investerer i
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </nav>
+      <nav class="nav-secondary">
+        <a href="#">Viden og Data</a>
+        <a href="#">Programmer</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Om Fonden</a>
+      </nav>
+    </div>
+
+    <!-- Under-menu -->
+    <div class="menu-overlay__sub" id="menuSub">
+      <div class="back-link" onclick="visHovedMenu()">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+          <path d="M5 1L1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        For dig der er
+      </div>
+      <nav class="nav-sub">
+        <a href="#" data-img="0">Iværksætter <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="1">Virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="2">Offentlig virksomhed <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="3">Forsker <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="4">Ansøgningsrådgiver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="5">Bevillingshaver <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="6">GTS, NHO <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" data-img="7">Presse / Partner <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

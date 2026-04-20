@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu — Danmarks Innovationsfond</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
+
+  <!-- ════════════════════════════════════════════════════════════
+       KONFIGURATION — justér disse værdier
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  const CONFIG = {
+    colorBrandDark:   '#08006F',
+    colorBrandBlue:   '#0A63FA',
+    colorLight:       '#ffffff',
+    panelTransition:  0.35,
+  };
+  </script>
+  <!-- ════════════════════════════════════════════════════════════ -->
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+    }
+
+    /* ── Utility topbar — præcis som forside ── */
+    .topbar {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 6px 80px;
+      border-bottom: 1px solid rgba(8,0,111,0.08);
+      height: 36px;
+    }
+
+    .topbar__link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 12px 3px 4px;
+      border-radius: 23px;
+      text-decoration: none;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .topbar__link:hover { color: #0A63FA; }
+    .topbar__link img { width: 22px; height: 22px; }
+
+    .topbar__lang {
+      display: flex;
+      align-items: center;
+      padding: 2px 10px;
+      border: 2px solid #08006F;
+      border-radius: 95px;
+      color: #08006F;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ── Menu — fylder hele viewporten ── */
+    .menu {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Billede-panel (venstre) ── */
+    .menu__image {
+      flex: 0 0 37%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu__image img {
+      position: absolute;
+      height: 110%;
+      top: -5%;
+      left: -80%;
+      max-width: none;
+      width: 300%;
+      object-fit: cover;
+    }
+
+    /* ── Menu-panel (højre) ── */
+    .menu__panel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Luk Menu — samme position som Menu-knap på forsiden ── */
+    .luk-menu {
+      position: absolute;
+      top: 64px;
+      right: 80px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      height: 50px;
+      background: #0A63FA;
+      border: none;
+      border-radius: 32px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .luk-menu:hover { background: #0855d4; }
+
+    .luk-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+    }
+
+    .luk-icon::before,
+    .luk-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0;
+      width: 14px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 50px;
+    }
+
+    .luk-icon::before { transform: translateY(-50%) rotate(45deg); }
+    .luk-icon::after  { transform: translateY(-50%) rotate(-45deg); }
+
+    /* ── State 1: Hoved-menu (hvid) ── */
+    .menu__main {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      padding: 130px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu__main.hidden {
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+    }
+
+    /* ── State 2: Under-menu (mørkeblå) ── */
+    .menu__sub {
+      position: absolute;
+      inset: 0;
+      background: #08006F;
+      padding: 106px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu__sub.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    /* ── Primære nav-items (H1) ── */
+    .nav-primary a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 64px;
+      line-height: 68px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-primary a:hover { color: #88B2FF; }
+    .nav-primary a:hover .chevron path { stroke: #88B2FF; }
+
+    /* ── Sekundære nav-items ── */
+    .nav-secondary {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-secondary a {
+      display: block;
+      padding: 4px 0;
+      text-decoration: none;
+      color: #08006F;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-secondary a:hover { color: #88B2FF; }
+
+    .chevron { flex-shrink: 0; opacity: 0.5; }
+
+    /* ── Tilbage-link ── */
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      width: fit-content;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #ffffff; }
+
+    /* ── Under-menu items (H3) ── */
+    .nav-sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'Parkinsans', sans-serif;
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 38px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-sub a:hover { color: #88B2FF; }
+    .nav-sub a:hover .chevron path { stroke: #88B2FF; }
+  </style>
+</head>
+<body>
+
+
+<!-- Menu — fylde præcis hero-størrelsen -->
+<div class="menu">
+
+  <!-- Billede -->
+  <div class="menu__image">
+    <img src="https://www.figma.com/api/mcp/asset/2ae5d8c6-a19b-4813-88ac-c5693e81ffcf" alt="Danmarks Innovationsfond">
+  </div>
+
+  <!-- Menu-panel -->
+  <div class="menu__panel">
+
+    <!-- Luk Menu — top: 28px, right: 80px = samme som Menu-knap på forsiden -->
+    <button class="luk-menu" onclick="lukMenu()">
+      <span class="luk-icon"></span>
+      Luk Menu
+    </button>
+
+    <!-- State 1: Hoved-menu -->
+    <div class="menu__main" id="mainMenu">
+      <nav class="nav-primary">
+        <a onclick="visUnderMenu()">
+          For dig der er
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Søg investering
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#">
+          Vi investerer i
+          <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1L7 7L1 13" stroke="#08006F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </nav>
+      <nav class="nav-secondary">
+        <a href="#">Viden og Data</a>
+        <a href="#">Programmer</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Om Fonden</a>
+      </nav>
+    </div>
+
+    <!-- State 2: Under-menu "For dig der er" -->
+    <div class="menu__sub" id="subMenu">
+      <div class="back-link" onclick="visHovedMenu()">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+          <path d="M5 1L1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        For dig der er
+      </div>
+      <nav class="nav-sub">
+        <a href="#">Iværksætter
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Virksomhed
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Offentlig virksomhed
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Forsker
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Ansøgningsrådgiver
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Bevillingshaver
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">GTS, NHO
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#">Presse / Partner
+          <svg class="chevron" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1L5 5L1 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </nav>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function visUnderMenu() {
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById('subMenu').classList.add('visible');
+  }
+
+  function visHovedMenu() {
+    document.getElementById('subMenu').classList.remove('visible');
+    document.getElementById('mainMenu').classList.remove('hidden');
+  }
+
+  function lukMenu() {
+    window.location.href = 'forside.html';
+  }
+</script>
+
+</body>
+</html>
