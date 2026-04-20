@@ -4,6 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DI — Gradient Baggrund</title>
+
+  <!-- ════════════════════════════════════════════════════════════
+       KONFIGURATION — justér disse værdier for at ændre baggrunden
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  const CONFIG = {
+    bgColor:         '#ffffff',      // Baggrundsfarve
+
+    // Blob-farver (RGB uden alpha)
+    blob1Color:      '10, 99, 250',  // Blå
+    blob2Color:      '8, 0, 111',    // DI-mørkeblå
+    blob3Color:      '65, 130, 255', // Lyseblå
+    mouseColor:      '10, 99, 250',  // Mouse-følger
+
+    // Blob-opaciteter (0–1)
+    blob1Opacity:    0.32,
+    blob2Opacity:    0.24,
+    blob3Opacity:    0.22,
+    mouseOpacity:    0.22,
+
+    // Blob-størrelser (vw = % af skærmbredden)
+    blob1Size:       75,
+    blob2Size:       65,
+    blob3Size:       55,
+    mouseBlobSize:   50,
+
+    // Blur (px)
+    blobBlur:        60,
+    mouseBlur:       40,
+
+    // Animationshastigheder (sekunder per loop)
+    orbit1Speed:     14,
+    orbit2Speed:     18,
+    orbit3Speed:     22,
+
+    // Mouse-følger — hvor hurtigt den indhenter musen (0.01 = træg, 0.2 = hurtig)
+    mouseLerp:       0.06,
+  };
+  </script>
+  <!-- ════════════════════════════════════════════════════════════ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Parkinsans:wght@600&display=swap" rel="stylesheet">
   <style>
@@ -334,6 +374,11 @@
 </head>
 <body>
 
+<a href="DI-background.html" download style="position:fixed;top:20px;right:20px;z-index:100;display:flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid rgba(8,0,111,0.3);color:#08006F;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.02em;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#08006F'" onmouseout="this.style.borderColor='rgba(8,0,111,0.3)'">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="#08006F" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+  Hent fil
+</a>
+
 <div class="bg">
   <div class="blobs">
     <div class="blob blob-1"></div>
@@ -507,44 +552,6 @@
 </div>
 
 <script>
-  /* ── KONFIGURATION ─────────────────────────────────────────────
-     Justér disse værdier for at ændre baggrunden.
-     ──────────────────────────────────────────────────────────── */
-  const CONFIG = {
-    bgColor:          '#ffffff',   // Baggrundsfarve
-
-    // Blob-farver (RGB uden alpha)
-    blob1Color:       '10, 99, 250',    // Blå
-    blob2Color:       '8, 0, 111',      // DI-mørkeblå
-    blob3Color:       '65, 130, 255',   // Lyseblå
-    mouseColor:       '10, 99, 250',    // Mouse-følger
-
-    // Blob-opaciteter (0–1)
-    blob1Opacity:     0.32,
-    blob2Opacity:     0.24,
-    blob3Opacity:     0.22,
-    mouseOpacity:     0.22,
-
-    // Blob-størrelser (vw = % af skærmbredden)
-    blob1Size:        75,
-    blob2Size:        65,
-    blob3Size:        55,
-    mouseBlobSize:    50,
-
-    // Blur (px)
-    blobBlur:         60,
-    mouseBlur:        40,
-
-    // Animationshastigheder (sekunder per loop)
-    orbit1Speed:      14,
-    orbit2Speed:      18,
-    orbit3Speed:      22,
-
-    // Mouse-følger — hvor hurtigt den indhenter musen (0.01 = træg, 0.2 = hurtig)
-    mouseLerp:        0.06,
-  };
-  /* ────────────────────────────────────────────────────────────── */
-
   const mouse = document.getElementById('blobMouse');
 
   let curX = window.innerWidth / 2;

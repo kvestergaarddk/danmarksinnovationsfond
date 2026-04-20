@@ -4,6 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DI Logo Animation</title>
+
+  <!-- ════════════════════════════════════════════════════════════
+       KONFIGURATION — justér disse værdier for at ændre animationen
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  const CONFIG = {
+    logoColor:           '#08006F',  // Logofarve (lys baggrund)
+    logoColorDark:       '#ffffff',  // Logofarve (mørk baggrund)
+    logoWidth:           '180px',    // Logobredde
+    logoHeight:          '186px',    // Logohøjde
+
+    // Timing (sekunder)
+    drawCircleDuration:  0.9,        // Hvor lang tid cirklen tegnes
+    drawCircleDelay:     0.2,        // Forsinkelse før cirkel starter
+    hideCircleAt:        1.25,       // Hvornår cirklen forsvinder
+    ringFadeInAt:        1.1,        // Hvornår ringen popper ind
+    bridgeDuration:      0.5,        // Hvor lang tid broen vokser
+    bridgeDelay:         1.1,        // Forsinkelse før bro starter
+  };
+  </script>
+  <!-- ════════════════════════════════════════════════════════════ -->
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -93,6 +114,11 @@
 </head>
 <body>
 
+<a href="DI-animation.html" download style="position:fixed;top:20px;right:20px;z-index:100;display:flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid rgba(8,0,111,0.3);color:#08006F;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.02em;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#08006F'" onmouseout="this.style.borderColor='rgba(8,0,111,0.3)'">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="#08006F" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+  <span style="white-space:nowrap">Hent fil</span>
+</a>
+
 <div class="logo-wrap" id="logoWrap">
   <svg viewBox="0 0 390 403" fill="none" xmlns="http://www.w3.org/2000/svg">
 
@@ -126,25 +152,6 @@
 </div>
 
 <script>
-  /* ── KONFIGURATION ─────────────────────────────────────────────
-     Justér disse værdier for at ændre animationen.
-     ──────────────────────────────────────────────────────────── */
-  const CONFIG = {
-    logoColor:        '#08006F',   // Logofarve (lys baggrund)
-    logoColorDark:    '#ffffff',   // Logofarve (mørk baggrund)
-    logoWidth:        '180px',     // Logobredde
-    logoHeight:       '186px',     // Logohøjde
-
-    // Timing (sekunder)
-    drawCircleDuration:  0.9,      // Hvor lang tid cirklen tegnes
-    drawCircleDelay:     0.2,      // Forsinkelse før cirkel starter
-    hideCircleAt:        1.25,     // Hvornår cirklen forsvinder
-    ringFadeInAt:        1.1,      // Hvornår ringen popper ind
-    bridgeDuration:      0.5,      // Hvor lang tid broen vokser
-    bridgeDelay:         1.1,      // Forsinkelse før bro starter
-  };
-  /* ────────────────────────────────────────────────────────────── */
-
   // Sæt CSS-variabler fra CONFIG
   const root = document.documentElement.style;
   root.setProperty('--draw-duration', CONFIG.drawCircleDuration + 's');
